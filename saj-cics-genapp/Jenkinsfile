@@ -2,13 +2,13 @@
 // GitHub cics-genapp Steve 3/20/2023
 // https://developer.ibm.com/components/ibmz/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy/
 // Agent labels
-echo 'cics-genapp Jenkinsfile pipeline started'
+echo 'saj-cics-genapp Jenkinsfile pipeline started'
 def zOsAgentLabel = env.ZOS_AGENT_LABEL ? env.ZOS_AGENT_LABEL : 'DBB20_zOS-Agent'
 def linuxAgent = 'master'
 
 // GIT repositories
-def srcGitRepo = 'https://github.com/stevenajordan16/saj-cics-genapp.git'
-def srcGitBranch = 'main'    1.fyre.ibm.com/
+def srcGitRepo = 'https://github.com/stevenajordan16/saj-cics-genapp/saj-cics-genapp.git'
+def srcGitBranch = 'main'  
 def zAppBuildGitRepo = 'http://MVPGitLabServer1.fyre.ibm.com/ray/dbb-zappbuild.git'
 def zAppBuildGitBranch = 'main'
 def dbbGitRepo = 'http://MVPGitLabServer1.fyre.ibm.com/ray/dbb.git'
