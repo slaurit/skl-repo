@@ -1,5 +1,5 @@
 //Modifications of Steve on 03/20/2023
-// GitHub cics-genapp Steve 3/20/2023
+// GitHub saj-cics-genapp Steve 3/20/2023
 // https://developer.ibm.com/components/ibmz/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy/
 // Agent labels
 echo 'saj-cics-genapp Jenkinsfile pipeline started'
