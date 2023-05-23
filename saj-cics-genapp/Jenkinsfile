@@ -260,7 +260,7 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
                         def crContent = null
                         node( zOsAgentLabel ) {
                             BUILD_OUTPUT_FOLDER = sh (script: "ls ${WORKSPACE}/BUILD-${BUILD_NUMBER}  | grep build | sort -u", returnStdout: true).trim()
-                            sh "$DBB_HOME/bin/groovyz ${WORKSPACE}/dbb/Pipeline/RunIDZCodeReview/RunCodeReview.groovy --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -cr  ${WORKSPACE}/saj-cics-genapp/saj-cics-genapp/cr-rules/CodeReviewRules.dat -ccr  ${WORKSPACE}/saj-cics-genapp/saj-cics-genapp/cr-rules/CodeReviewRules.ccr"
+                            sh "$DBB_HOME/bin/groovyz ${WORKSPACE}/dbb/Pipeline/RunIDZCodeReview/RunCodeReview.groovy --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -cr  ${WORKSPACE}/saj-repo-genapp/saj-cics-genapp/cr-rules/CodeReviewRules.dat -ccr  ${WORKSPACE}/saj-repo/saj-cics-genapp/cr-rules/CodeReviewRules.ccr"
                             dir ("${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER}") {
                                 def crJunitFile = fileExists "CodeReviewJUNIT.xml"
                                 if ( crJunitFile ) {
