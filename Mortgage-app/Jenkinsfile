@@ -13,7 +13,7 @@ def zAppBuildGitRepo = 'https://github.com/PriyanjanaGit/dbb-zappbuild.git'
 def zAppBuildGitBranch = 'main'
 def dbbGitRepo = 'https://github.com/PriyanjanaGit/dbb.git'
 def dbbGitBranch = 'main'
-echo 'saj-cics-genapp Jenkinsfile pipeline DBB'
+echo 'Mortgage-app Jenkinsfile pipeline DBB'
 
 // DBB
 def dbbHome='/var/dbb'
@@ -132,7 +132,7 @@ echo 'Mortgage-app Jenkinsfile pipeline dir -> Mortgage-app '
                                                 extensions: [
                                                 [$class: 'SparseCheckoutPaths',
                                                    sparseCheckoutPaths:[[$class:'SparseCheckoutPath',
-                                                   path:'saj-cics-genapp/']]]
+                                                   path:'Mortgage-app/']]]
                                                 ],
                                                 submoduleCfg: [],
                                                 userRemoteConfigs: [[
@@ -213,7 +213,7 @@ echo 'Mortgage-app Jenkinsfile pipeline dir -> Mortgage-app '
                     zUnitContents.each { zUnitContent ->
                         writeFile file: '/tmp/zUnit.zunit', text:zUnitContent
                         sh (returnStatus: true, script: '''#!/bin/sh
-                            curl --silent https://raw.githubusercontent.com/ibm/dbb-pipeline/main/saj-cics-genapp/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
+                            curl --silent https://raw.githubusercontent.com/ibm/dbb-pipeline/main/Mortgage-app/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
                             xsltproc /tmp/AZUZ2J30.xsl /tmp/zUnit.zunit > ${WORKSPACE}/zUnit.xml
                         ''')
                         junit "zUnit.xml"
