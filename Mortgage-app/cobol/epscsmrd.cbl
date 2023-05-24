@@ -18,7 +18,6 @@
       *XML to Language Structure Input CCSID 1140
       *XML to Language Structure Output CCSID 1140
       *Language Structure to XML Output CCSID 1140
-      * SAJ
        DATA DIVISION.
        WORKING-STORAGE SECTION.
        1 CONVERTER-ERROR-7.
