@@ -10,4 +10,3 @@
            03 EPSPDATA-RETURN-MONTH-PAYMENT
                                         PIC S9(7)V99 COMP.
            03 EPSPDATA-RETURN-ERROR     PIC X(80).
-
