@@ -15,7 +15,7 @@ def dbbGitRepo = 'https://github.com/PriyanjanaGit/dbb.git'
 def dbbGitBranch = 'main'
 echo 'saj-cics-genapp Jenkinsfile pipeline DBB'
 
-// DBB
+// DBB Settings
 def dbbHome='/var/dbb'
 //def dbbUrl='https://dbbsample-dbb-route-dbbserver.apps.mvpopenshift.cp.fyre.ibm.com/dbb'
 def dbbUrl='https://mvpserver1.fyre.ibm.com:9443/dbb'
