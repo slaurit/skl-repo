@@ -11,7 +11,7 @@ def srcGitRepo = 'https://github.com/sajordan/saj-repo.git'
 def srcGitBranch = 'main'
 def zAppBuildGitRepo = 'http://MVPGitLabServer1.fyre.ibm.com/dbb310/dbb320/dbb-zappbuild.git'
 def zAppBuildGitBranch = 'main'
-def dbbGitRepo = 'https://github.com/PriyanjanaGit/dbb.git'
+def dbbGitRepo = 'http://mvpgitlabserver1.fyre.ibm.com/dbb310/dbb'
 def dbbGitBranch = 'main'
 echo 'saj-cics-genapp Jenkinsfile pipeline DBB'
 
