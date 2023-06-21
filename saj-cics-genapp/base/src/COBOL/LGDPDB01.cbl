@@ -19,6 +19,7 @@
       *  Endowment/House/Motor/Commercial table.                       *
       *                                                                *
       *                                                                *
+      *                                                                *
       ******************************************************************
        IDENTIFICATION DIVISION.
        PROGRAM-ID. LGDPDB01.
