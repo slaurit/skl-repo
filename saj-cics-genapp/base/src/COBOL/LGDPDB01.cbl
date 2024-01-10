@@ -13,6 +13,7 @@
       * CONTRACT WITH IBM CORPORATION                                  *
       *                                                                *
       *                                                                *
+      *  Scott 1/9/2024                                                *
       *                    DELETE Policy                               *
       *                                                                *
       *  Appropriate row will be deleted from DB2 Policy and the       *
