@@ -7,7 +7,7 @@ def zOsAgentLabel = env.ZOS_AGENT_LABEL ? env.ZOS_AGENT_LABEL : 'DBB20_zOS-Agent
 def linuxAgent = 'master'
 
 // GIT repositories
-def srcGitRepo = 'https://github.com/sajordan/saj-repo.git'
+def srcGitRepo = 'https://github.com/slaurit/skl-repo.git'
 def srcGitBranch = 'main'
 def zAppBuildGitRepo = 'http://MVPGitLabServer1.fyre.ibm.com/dbb310/dbb320/dbb-zappbuild.git'
 def zAppBuildGitBranch = 'main'
@@ -19,7 +19,7 @@ echo 'saj-cics-genapp Jenkinsfile pipeline DBB'
 def dbbHome='/var/dbb'
 //def dbbUrl='https://dbbsample-dbb-route-dbbserver.apps.mvpopenshift.cp.fyre.ibm.com/dbb'
 def dbbUrl='https://mvpserver1.fyre.ibm.com:9443/dbb'
-def dbbHlq='SJORDAN.JENKINS'
+def dbbHlq='SLAURIT.JENKINS'
 def dbbBuildType='-f'
 def dbbGroovyzOpts= '-Dorg.slf4j.simpleLogger'
 //def dbbGroovyzOpts= '-Dorg.slf4j.simpleLogger -cp /u/user3/logging'
@@ -28,15 +28,15 @@ def dbbGroovyzOpts= '-Dorg.slf4j.simpleLogger'
 //def dbbBuildExtraOpts= '-zTest'
 def dbbBuildExtraOpts= ''
 
-def dbbCredentialOptions='-id SJORDAN -pf /u/sjordan/password.txt --url jdbc:db2://tvt7111.svl.ibm.com:5050/DBC1 '
+def dbbCredentialOptions='-id SLAURIT -pf /u/slaurit/password.txt --url jdbc:db2://tvt7111.svl.ibm.com:5050/DBC1 '
 
 echo 'saj-cics-genapp Jenkinsfile pipeline Artifactory'
 // Artifactory
-def artiCredentialsId = 'steve_artifactory_id'
+def artiCredentialsId = 'scott-artifactory_id'
 //def artiCredentialsId = 'proyapikey'
 def ARTIFACTORY_URL='https://na.artifactory.swg-devops.com/artifactory/'
 //def ARTIFACTORY_REPO_PATH='hyc-mvp-team-maven-local/MVPGenapp'
-def ARTIFACTORY_REPO_PATH='hyc-mvp-team-maven-local/sjordan'
+def ARTIFACTORY_REPO_PATH='hyc-mvp-team-maven-local/slaurit'
 
 // UCD
 def ucdApplication = 'MVP-cics-genapp-application'
@@ -83,9 +83,9 @@ pipeline {
         DBB_CONF='/var/dbb/conf'
     //  DBB_URL='https://dbbsample-dbb-route-dbbns.apps.mvpopenshift.cp.fyre.ibm.com/dbb/'
         DBB_URL='https://mvpserver1.fyre.ibm.com:9443/dbb'
-        DBB_HLQ='SJORDAN.JENKINS'
+        DBB_HLQ='SLAURIT.JENKINS'
         ARTIFACTORY_URL='https://na.artifactory.swg-devops.com/artifactory'
-        ARTIFACTORY_REPO_PATH='hyc-mvp-team-maven-local/sjordan'
+        ARTIFACTORY_REPO_PATH='hyc-mvp-team-maven-local/slaurit'
 //        ARTIFACTORY_REPO_PATH='hyc-mvp-team-maven-local/PriyaGenapp'
         UCD_BUZTOOL_PATH='/var/ucd/v73/bin/buztool.sh'
         UCD_HOME='/var/ucd/v73'
@@ -198,7 +198,7 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
                         dbbHome = env.DBB_HOME
                         dbbUrl = env.DBB_URL
                         dbbHlq = env.DBB_HLQ
-                        sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application saj-cics-genapp --sourceDir ${WORKSPACE}/saj-cics-genapp  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.GENTEST  $dbbCredentialOptions -d $dbbBuildType $buildVerbose $dbbZunitCccOpts $dbbBuildExtraOpts "
+                        sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application saj-cics-genapp --sourceDir ${WORKSPACE}/saj-cics-genapp  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.JENKINS  $dbbCredentialOptions -d $dbbBuildType $buildVerbose $dbbZunitCccOpts $dbbBuildExtraOpts "
                         def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
                         // Do not enter into some steps if nothing in the build list
                         hasBuildFiles = files.length > 0 && files[0].length > 0
@@ -293,7 +293,7 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
                             BUILD_OUTPUT_FOLDER = sh (script: "ls ${WORKSPACE}/BUILD-${BUILD_NUMBER}  | grep build | sort -u", returnStdout: true).trim()
                             dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER}") {
                                 withCredentials([usernamePassword(credentialsId: artiCredentialsId, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                    writeFile file: "${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactoy.properties", encoding: "ibm-1047",
+                                    writeFile file: "${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactory.properties", encoding: "ibm-1047",
                                        text:"""EXTREPO.APIKEY=$PASSWORD
 EXTREPO.username=$USERNAME
 EXTREPO.Repository_type=artifactory
@@ -303,9 +303,9 @@ EXTREPO.url=${artiUrl}
                                 }
                                 echo " Start dbb-ucd-packaging.groovy "
  // password not encrypted, use my own
-                         //       sh "cp $HOME/Jenkins-Cloud/workspace/artifactory.properties ${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactoy.properties"
-                                  sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -prop ${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactoy.properties"
-                         //       sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-new/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -prop /u/rlam/Jenkins-Cloud/workspace/GenappPipeline/BUILD-184/artifactoy.properties"
+                         //       sh "cp $HOME/Jenkins-Cloud/workspace/artifactory.properties ${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactory.properties"
+                                  sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -prop ${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactory.properties"
+                         //       sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-new/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -prop /u/rlam/Jenkins-Cloud/workspace/GenappPipeline/BUILD-184/artifactory.properties"
 
                             }
                         }
