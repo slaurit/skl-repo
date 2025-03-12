@@ -1,5 +1,10 @@
 // Scott Updates to cics-genapp  03/12/2025
 // https://developer.ibm.com/components/ibmz/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy/
+// Sections to Run
+def runBuild = true
+def runPackage = false
+def runUCD = false
+
 // Agent labels
 echo 'cics-genapp Jenkinsfile pipeline started'
 def zOsAgentLabel = env.ZOS_AGENT_LABEL ? env.ZOS_AGENT_LABEL : 'DBB20_zOS-Agent'
@@ -197,11 +202,13 @@ echo 'cics-genapp Jenkinsfile pipeline dir -> cics-genapp '
                         dbbHome = env.DBB_HOME
                         dbbUrl = env.DBB_URL
                         dbbHlq = env.DBB_HLQ
-                        sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-genapp --sourceDir ${WORKSPACE}/cics-genapp --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.JENKINS  $dbbCredentialOptions -d $dbbBuildType $buildVerbose $dbbBuildExtraOpts "
-                        def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
-                        //$dbbZunitCccOpts
-                        // Do not enter into some steps if nothing in the build list
-                        hasBuildFiles = files.length > 0 && files[0].length > 0
+                        if ( env.runBuild == 'true' ) {
+                            sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-genapp --sourceDir ${WORKSPACE}/cics-genapp --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.JENKINS  $dbbCredentialOptions -d $dbbBuildType $buildVerbose $dbbBuildExtraOpts "
+                            def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
+                            //$dbbZunitCccOpts
+                            // Do not enter into some steps if nothing in the build list
+                            hasBuildFiles = files.length > 0 && files[0].length > 0
+                        }
 
                         // def zUnitFiles = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/*.zunit.report.log")
                         // zUnitFiles.each { zUnit ->
@@ -302,11 +309,12 @@ EXTREPO.url=${artiUrl}
                                       """
                                 }
                                 echo " Start dbb-ucd-packaging.groovy "
+                            if ( env.runPackage == 'true' ) {
  // password not encrypted, use my own
-                         //       sh "cp $HOME/Jenkins-Cloud/workspace/artifactory.properties ${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactory.properties"
-                                  sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -prop ${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactory.properties"
-                         //       sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-new/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -prop /u/rlam/Jenkins-Cloud/workspace/GenappPipeline/BUILD-184/artifactory.properties"
-
+                         //     sh "cp $HOME/Jenkins-Cloud/workspace/artifactory.properties ${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactory.properties"
+                                sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -prop ${WORKSPACE}/BUILD-${BUILD_NUMBER}/artifactory.properties"
+                         //     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-new/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -prop /u/rlam/Jenkins-Cloud/workspace/GenappPipeline/BUILD-184/artifactory.properties"
+                            }
                             }
                         }
                     }
@@ -318,7 +326,7 @@ EXTREPO.url=${artiUrl}
             steps {
                 script{
 echo 'UCD Deploy Starts'
-                    if ( hasBuildFiles ) {
+                    if ( hasBuildFiles && env.runUCD == 'true' ) {
                         script{
                             step(
                                   [$class: 'UCDeployPublisher',
