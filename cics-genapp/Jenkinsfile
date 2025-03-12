@@ -175,7 +175,7 @@ echo 'cics-genapp Jenkinsfile pipeline dir -> cics-genapp '
                 }
             }
             post {
-                always {
+                if ( hasBuildFiles ) {
                     node( zOsAgentLabel ) {
                         dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}") {
                             archiveArtifacts allowEmptyArchive: true,
