@@ -174,7 +174,7 @@ echo 'cics-genapp Jenkinsfile pipeline dir -> cics-genapp '
             steps {
                 script{
                     // def zUnitContents = []
-                    def cccFolder = null
+                    //def cccFolder = null
                     node( zOsAgentLabel ) {
                         if ( env.DBB_BUILD_EXTRA_OPTS != null ) {
                            dbbBuildExtraOpts = env.DBB_BUILD_EXTRA_OPTS
@@ -218,19 +218,19 @@ echo 'cics-genapp Jenkinsfile pipeline dir -> cics-genapp '
                     //     ''')
                     //     junit "zUnit.xml"
                     // }
-                    if ( cccFolder != null ) {
-                        env.CCC_FOLDER = cccFolder
-                        sh (returnStatus: true, script: '''#!/bin/sh
-                            mkdir -p ${WORKSPACE}/BUILD-${BUILD_NUMBER}
-                            mv -f ${CCC_FOLDER}/*.pdf ${WORKSPACE}/BUILD-${BUILD_NUMBER}
-                            mv -f ${CCC_FOLDER}/*.cczip ${WORKSPACE}/BUILD-${BUILD_NUMBER}
-                        ''')
-                        dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}") {
-                            archiveArtifacts allowEmptyArchive: true,
-                                            artifacts: "*.pdf,*.cczip"
-                                            onlyIfSuccessful: false
-                        }
-                    }
+                    //if ( cccFolder != null ) {
+                    //    env.CCC_FOLDER = cccFolder
+                    //   sh (returnStatus: true, script: '''#!/bin/sh
+                    //        mkdir -p ${WORKSPACE}/BUILD-${BUILD_NUMBER}
+                    //        mv -f ${CCC_FOLDER}/*.pdf ${WORKSPACE}/BUILD-${BUILD_NUMBER}
+                    //        mv -f ${CCC_FOLDER}/*.cczip ${WORKSPACE}/BUILD-${BUILD_NUMBER}
+                    //    ''')
+                    //    dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}") {
+                    //        archiveArtifacts allowEmptyArchive: true,
+                    //                        artifacts: "*.pdf,*.cczip"
+                    //                        onlyIfSuccessful: false
+                    //    }
+                    //}
                 }
             }
             post {
