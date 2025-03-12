@@ -1,8 +1,7 @@
-//Modifications of Steve on 03/20/2023
-// GitHub saj-cics-genapp Steve 3/20/2023
+// Scott Updates to cics-genapp  03/12/2025
 // https://developer.ibm.com/components/ibmz/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy/
 // Agent labels
-echo 'saj-cics-genapp Jenkinsfile pipeline started'
+echo 'cics-genapp Jenkinsfile pipeline started'
 def zOsAgentLabel = env.ZOS_AGENT_LABEL ? env.ZOS_AGENT_LABEL : 'DBB20_zOS-Agent'
 def linuxAgent = 'master'
 
@@ -13,7 +12,7 @@ def zAppBuildGitRepo = 'http://MVPGitLabServer1.fyre.ibm.com/dbb310/dbb320/dbb-z
 def zAppBuildGitBranch = 'main'
 def dbbGitRepo = 'http://mvpgitlabserver1.fyre.ibm.com/dbb310/dbb'
 def dbbGitBranch = 'main'
-echo 'saj-cics-genapp Jenkinsfile pipeline DBB'
+echo 'cics-genapp Jenkinsfile pipeline DBB'
 
 // DBB Settings
 def dbbHome='/var/dbb'
@@ -30,7 +29,7 @@ def dbbBuildExtraOpts= ''
 
 def dbbCredentialOptions='-id SLAURIT -pf /u/slaurit/password.txt --url jdbc:db2://tvt7111.svl.ibm.com:5050/DBC1 '
 
-echo 'saj-cics-genapp Jenkinsfile pipeline Artifactory'
+echo 'cics-genapp Jenkinsfile pipeline Artifactory'
 // Artifactory
 def artiCredentialsId = 'scott-artifactory_id'
 //def artiCredentialsId = 'proyapikey'
@@ -66,7 +65,7 @@ String getArtifactoruUrl(String artiUrl) {
 }
 */
 
-echo 'saj-cics-genapp Jenkinsfile pipeline Stage Git Clone/Refresh '
+echo 'cics-genapp Jenkinsfile pipeline Stage Git Clone/Refresh '
 pipeline {
 
     agent { label linuxAgent }
@@ -107,7 +106,7 @@ pipeline {
                         echo sh(script: 'env|sort', returnStdout: true)
                     }
 
-echo 'saj-cics-genapp Jenkinsfile pipeline Check Env '
+echo 'cics-genapp Jenkinsfile pipeline Check Env '
                     if ( env.DBB_HOME == null )
                         error("DBB_HOME is not defined !!!")
                     if ( env.DBB_URL == null )
@@ -121,8 +120,8 @@ echo 'saj-cics-genapp Jenkinsfile pipeline Check Env '
                     if ( env.UCD_BUZTOOL_PATH == null )
                         error("UCD_BUZTOOL_PATH is not defined !!!")
 
-echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
-                    dir('saj-cics-genapp') {
+echo 'cics-genapp Jenkinsfile pipeline dir -> cics-genapp '
+                    dir('cics-genapp') {
                         sh(script: 'rm -f .git/info/sparse-checkout', returnStdout: true)
                         srcGitRepo = scm.getUserRemoteConfigs()[0].getUrl()
                         srcGitBranch = scm.branches[0].name
@@ -132,7 +131,7 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
                                                 extensions: [
                                                 [$class: 'SparseCheckoutPaths',
                                                    sparseCheckoutPaths:[[$class:'SparseCheckoutPath',
-                                                   path:'saj-cics-genapp/']]]
+                                                   path:'cics-genapp/']]]
                                                 ],
                                                 submoduleCfg: [],
                                                 userRemoteConfigs: [[
@@ -198,7 +197,7 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
                         dbbHome = env.DBB_HOME
                         dbbUrl = env.DBB_URL
                         dbbHlq = env.DBB_HLQ
-                        sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application saj-cics-genapp --sourceDir ${WORKSPACE}/saj-cics-genapp  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.JENKINS  $dbbCredentialOptions -d $dbbBuildType $buildVerbose $dbbBuildExtraOpts "
+                        sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-genapp --sourceDir ${WORKSPACE}/cics-genapp  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.JENKINS  $dbbCredentialOptions -d $dbbBuildType $buildVerbose $dbbBuildExtraOpts "
                         def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
                         //$dbbZunitCccOpts
                         // Do not enter into some steps if nothing in the build list
@@ -214,7 +213,7 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
                     // zUnitContents.each { zUnitContent ->
                     //     writeFile file: '/tmp/zUnit.zunit', text:zUnitContent
                     //     sh (returnStatus: true, script: '''#!/bin/sh
-                    //         curl --silent https://raw.githubusercontent.com/ibm/dbb-pipeline/main/saj-cics-genapp/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
+                    //         curl --silent https://raw.githubusercontent.com/ibm/dbb-pipeline/main/cics-genapp/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
                     //         xsltproc /tmp/AZUZ2J30.xsl /tmp/zUnit.zunit > ${WORKSPACE}/zUnit.xml
                     //     ''')
                     //     junit "zUnit.xml"
@@ -261,7 +260,7 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
         //                 def crContent = null
         //                 node( zOsAgentLabel ) {
         //                     BUILD_OUTPUT_FOLDER = sh (script: "ls ${WORKSPACE}/BUILD-${BUILD_NUMBER}  | grep build | sort -u", returnStdout: true).trim()
-        //                     sh "$DBB_HOME/bin/groovyz ${WORKSPACE}/dbb/Pipeline/RunIDZCodeReview/RunCodeReview.groovy --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -cr  ${WORKSPACE}/saj-repo-genapp/saj-cics-genapp/cr-rules/CodeReviewRules.dat -ccr  ${WORKSPACE}/saj-repo/saj-cics-genapp/cr-rules/CodeReviewRules.ccr"
+        //                     sh "$DBB_HOME/bin/groovyz ${WORKSPACE}/dbb/Pipeline/RunIDZCodeReview/RunCodeReview.groovy --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -cr  ${WORKSPACE}/skl-repo/cics-genapp/cr-rules/CodeReviewRules.dat -ccr  ${WORKSPACE}/skl-repo/cics-genapp/cr-rules/CodeReviewRules.ccr"
         //                     dir ("${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER}") {
         //                         def crJunitFile = fileExists "CodeReviewJUNIT.xml"
         //                         if ( crJunitFile ) {
