@@ -1,7 +1,7 @@
 // Scott Updates to cics-genapp  03/12/2025
 // https://developer.ibm.com/components/ibmz/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy/
 // Sections to Run
-def runBuild = true
+def runBuild = 'true'
 
 // Agent labels
 echo 'cics-genapp Jenkinsfile pipeline started'
