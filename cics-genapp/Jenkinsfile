@@ -187,5 +187,5 @@ echo 'cics-genapp Jenkinsfile pipeline dir -> cics-genapp '
                 }
             }
         }
-
+    }
 }
