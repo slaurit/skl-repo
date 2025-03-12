@@ -174,7 +174,7 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
         stage('DBB Build & UnitTest & Code Coverage') {
             steps {
                 script{
-                    def zUnitContents = []
+                    // def zUnitContents = []
                     def cccFolder = null
                     node( zOsAgentLabel ) {
                         if ( env.DBB_BUILD_EXTRA_OPTS != null ) {
@@ -190,10 +190,10 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
                             dbbGroovyzOpts = env.GROOVYZ_BUILD_EXTRA_OPTS
                         }
                         def dbbZunitCccOpts = ''
-                        if ( env.CCC_HOST != null && env.CCC_PORT != null && env.CCC_FOLDER != null ) {
-                            dbbZunitCccOpts="-cc -cch ${env.CCC_HOST} -ccp ${env.CCC_PORT}"
-                            cccFolder = env.CCC_FOLDER
-                        }
+                        // if ( env.CCC_HOST != null && env.CCC_PORT != null && env.CCC_FOLDER != null ) {
+                        //     dbbZunitCccOpts="-cc -cch ${env.CCC_HOST} -ccp ${env.CCC_PORT}"
+                        //     cccFolder = env.CCC_FOLDER
+                        // }
                         idzCodeReviewFlag = env.RUN_IDZ_CODE_REVIEW && env.RUN_IDZ_CODE_REVIEW == 'true' ? true : false
                         dbbHome = env.DBB_HOME
                         dbbUrl = env.DBB_URL
@@ -203,21 +203,21 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
                         // Do not enter into some steps if nothing in the build list
                         hasBuildFiles = files.length > 0 && files[0].length > 0
 
-                        def zUnitFiles = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/*.zunit.report.log")
-                        zUnitFiles.each { zUnit ->
-                            println "Process zUnit: $zUnit.path"
-                            def zUnitContent = readFile file: zUnit.path
-                            zUnitContents << zUnitContent
-                        }
+                        // def zUnitFiles = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/*.zunit.report.log")
+                        // zUnitFiles.each { zUnit ->
+                        //     println "Process zUnit: $zUnit.path"
+                        //     def zUnitContent = readFile file: zUnit.path
+                        //     zUnitContents << zUnitContent
+                        // }
                     }
-                    zUnitContents.each { zUnitContent ->
-                        writeFile file: '/tmp/zUnit.zunit', text:zUnitContent
-                        sh (returnStatus: true, script: '''#!/bin/sh
-                            curl --silent https://raw.githubusercontent.com/ibm/dbb-pipeline/main/saj-cics-genapp/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
-                            xsltproc /tmp/AZUZ2J30.xsl /tmp/zUnit.zunit > ${WORKSPACE}/zUnit.xml
-                        ''')
-                        junit "zUnit.xml"
-                    }
+                    // zUnitContents.each { zUnitContent ->
+                    //     writeFile file: '/tmp/zUnit.zunit', text:zUnitContent
+                    //     sh (returnStatus: true, script: '''#!/bin/sh
+                    //         curl --silent https://raw.githubusercontent.com/ibm/dbb-pipeline/main/saj-cics-genapp/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
+                    //         xsltproc /tmp/AZUZ2J30.xsl /tmp/zUnit.zunit > ${WORKSPACE}/zUnit.xml
+                    //     ''')
+                    //     junit "zUnit.xml"
+                    // }
                     if ( cccFolder != null ) {
                         env.CCC_FOLDER = cccFolder
                         sh (returnStatus: true, script: '''#!/bin/sh
@@ -252,34 +252,34 @@ echo 'saj-cics-genapp Jenkinsfile pipeline dir -> saj-cics-genapp '
             }
         }
 
-        stage("IDz Code Review") {
-            when  { expression { return  idzCodeReviewFlag == true  } }
-            steps {
-                script{
-                    if ( hasBuildFiles ) {
-                        def crContent = null
-                        node( zOsAgentLabel ) {
-                            BUILD_OUTPUT_FOLDER = sh (script: "ls ${WORKSPACE}/BUILD-${BUILD_NUMBER}  | grep build | sort -u", returnStdout: true).trim()
-                            sh "$DBB_HOME/bin/groovyz ${WORKSPACE}/dbb/Pipeline/RunIDZCodeReview/RunCodeReview.groovy --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -cr  ${WORKSPACE}/saj-repo-genapp/saj-cics-genapp/cr-rules/CodeReviewRules.dat -ccr  ${WORKSPACE}/saj-repo/saj-cics-genapp/cr-rules/CodeReviewRules.ccr"
-                            dir ("${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER}") {
-                                def crJunitFile = fileExists "CodeReviewJUNIT.xml"
-                                if ( crJunitFile ) {
-                                    crContent = readFile file: "CodeReviewJUNIT.xml"
-                                    archiveArtifacts allowEmptyArchive: true,
-                                            artifacts: '*.csv,*.xml',
-                                            onlyIfSuccessful: false
-                                }
-                            }
-                        }
-                        if ( crContent ) {
-                            sh "mkdir -p ${WORKSPACE}/BUILD-${BUILD_NUMBER}"
-                            writeFile file: "${WORKSPACE}/BUILD-${BUILD_NUMBER}/CodeReviewJUNIT.xml", text:crContent.trim()
-                            junit allowEmptyResults: true, testResults: "BUILD-${BUILD_NUMBER}/CodeReviewJUNIT.xml"
-                        }
-                    }
-                }
-            }
-        }
+        // stage("IDz Code Review") {
+        //     when  { expression { return  idzCodeReviewFlag == true  } }
+        //     steps {
+        //         script{
+        //             if ( hasBuildFiles ) {
+        //                 def crContent = null
+        //                 node( zOsAgentLabel ) {
+        //                     BUILD_OUTPUT_FOLDER = sh (script: "ls ${WORKSPACE}/BUILD-${BUILD_NUMBER}  | grep build | sort -u", returnStdout: true).trim()
+        //                     sh "$DBB_HOME/bin/groovyz ${WORKSPACE}/dbb/Pipeline/RunIDZCodeReview/RunCodeReview.groovy --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -cr  ${WORKSPACE}/saj-repo-genapp/saj-cics-genapp/cr-rules/CodeReviewRules.dat -ccr  ${WORKSPACE}/saj-repo/saj-cics-genapp/cr-rules/CodeReviewRules.ccr"
+        //                     dir ("${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER}") {
+        //                         def crJunitFile = fileExists "CodeReviewJUNIT.xml"
+        //                         if ( crJunitFile ) {
+        //                             crContent = readFile file: "CodeReviewJUNIT.xml"
+        //                             archiveArtifacts allowEmptyArchive: true,
+        //                                     artifacts: '*.csv,*.xml',
+        //                                     onlyIfSuccessful: false
+        //                         }
+        //                     }
+        //                 }
+        //                 if ( crContent ) {
+        //                     sh "mkdir -p ${WORKSPACE}/BUILD-${BUILD_NUMBER}"
+        //                     writeFile file: "${WORKSPACE}/BUILD-${BUILD_NUMBER}/CodeReviewJUNIT.xml", text:crContent.trim()
+        //                     junit allowEmptyResults: true, testResults: "BUILD-${BUILD_NUMBER}/CodeReviewJUNIT.xml"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('UCD Package') {
             steps {
