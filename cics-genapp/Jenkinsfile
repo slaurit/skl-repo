@@ -174,18 +174,6 @@ echo 'cics-genapp Jenkinsfile pipeline dir -> cics-genapp '
                     }
                 }
             }
-            post {
-                if ( hasBuildFiles ) {
-                    node( zOsAgentLabel ) {
-                        dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}") {
-                            archiveArtifacts allowEmptyArchive: true,
-                                            artifacts: '**/*.log,**/*.json,**/*.html',
-                                            excludes: '**/*clist',
-                                            onlyIfSuccessful: false
-                        }
-                    }
-                }
-            }
         }
     }
 }
